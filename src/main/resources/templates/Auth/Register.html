@@ -1,0 +1,80 @@
+<head th:replace="~{Shared/LayoutNoAuth::common_head(~{::title})}">
+    <title>Registro</title>
+</head>
+<body th:replace="~{Shared/LayoutNoAuth::common_layout(~{::main})}">
+
+<main class="container">
+    <h1 class="text-center fw-bold">Registro Clientes</h1>
+
+    <form th:action="@{/guardarCliente}"  method="POST" th:object="${cliente}"  class="row g-3 was-validated">
+
+        <div class="col-md-4">
+            <label for="name" class="form-label">Nombre Completo</label>
+            <input type="text" class="form-control" id="name" th:field="*{nombre}"  required>
+        </div>
+
+        <div class="col-md-4">
+            <label for="lastName" class="form-label">Apellidos</label>
+            <input type="text" class="form-control" id="lastName" th:field="*{apellido}"  required>
+        </div>
+
+        <div class="col-md-4">
+            <label for="cui" class="form-label">Cui</label>
+            <input type="number" class="form-control" id="cui" th:field="*{cui}" min="1111111111111" max="9999999999999" required>
+            <div class="error-message" th:if="${#fields.hasErrors('cui')}" th:errors="*{cui}"></div>
+        </div>
+
+        <div class="col-md-4">
+            <label for="nit" class="form-label">Nit</label>
+            <input type="text" class="form-control" id="nit" th:field="*{nit}" maxlength="9" minlength="8" required>
+            <div class="error-message" th:if="${#fields.hasErrors('nit')}" th:errors="*{nit}"></div>
+        </div>
+
+        <div class="col-md-4">
+            <label for="telefono" class="form-label">Telefono</label>
+            <input type="number" class="form-control" id="telefono" th:field="*{telefono}" min="11111111" max="99999999" required>
+            <div class="error-message" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></div>
+        </div>
+
+
+        <div class="col-md-4">
+            <label for="genero" class="form-label">Genero</label>
+            <select id="genero" class="form-select"  th:field="*{genero}"  required>
+                <option value="" selected>Selecciona un genero...</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+                <option value="Otro">Otro</option>
+            </select>
+            <div class="error-message" th:if="${#fields.hasErrors('genero')}" th:errors="*{genero}"></div>
+        </div>
+
+        <div class="col-12">
+            <label for="inputAddress" class="form-label">Domicilio</label>
+            <input type="text" class="form-control" id="inputAddress" placeholder="0 ave 00-00 zona 0, guatemala" th:field="*{direccion}"  required>
+            <div class="error-message" th:if="${#fields.hasErrors('direccion')}" th:errors="*{direccion}"></div>
+        </div>
+
+        <div class="col-md-6">
+            <label for="inputEmail4" class="form-label">Correo Electronico</label>
+            <input type="email" class="form-control" id="inputEmail4" th:field="*{usuario.correo}" required>
+            <div class="error-message" th:if="${#fields.hasErrors('usuario.correo')}" th:errors="*{usuario.correo}"></div>
+        </div>
+
+        <div class="col-md-6">
+            <label for="inputPassword4" class="form-label">Contraseña</label>
+            <input type="password" class="form-control" id="inputPassword4" th:field="*{usuario.contrasenia}"  required minlength="6">
+            <div class="error-message" th:if="${#fields.hasErrors('usuario.contrasenia')}" th:errors="*{usuario.contrasenia}"></div>
+        </div>
+
+        <div class="col-12 text-center">
+            <button type="submit" class="btn btn-primary">Registrarme</button>
+        </div>
+
+
+
+    </form>
+    <div class="text-center">
+    <a th:href="@{/login}" class="link-danger">¿Tienes cuenta? Login Aquí</a>
+    </div>
+</main>
+</body>
