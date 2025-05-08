@@ -19,4 +19,8 @@ public class AuthController {
         return "Auth/Register";
     }
 
+    @GetMapping("/consultas")
+    public String Consultas(){
+        return "Auth/Consultas";
+    }
 }

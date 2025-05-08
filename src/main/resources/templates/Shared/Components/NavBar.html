@@ -1,40 +1,42 @@
 <nav th:fragment="common-header" class="navbar navbar-dark bg-black fixed-top">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/"><img src="/images/LOGO.PNG" width="105" height="80"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="offcanvas offcanvas-start bg-black" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
             <div class="offcanvas-header">
-                <h5 class="offcanvas-title text-light" id="offcanvasNavbarLabel">Speci-Lab</h5>
+                <h5 class="offcanvas-title text-light" id="offcanvasNavbarLabel">menu de inicio carga de fotos</h5>
                 <button type="button" class="btn-close bg-light text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+
+                    <!-- boton para subir fotos o imagenes -->
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                        <a class="nav-link active" aria-current="page" href="/consultas">Carga de fotos</a>
                     </li>
+
+                    <!-- botnon que nos llevara para descargar imagenes -->
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/Solicitud/Create">Creación de Solicitud</a>
+                        <a class="nav-link active" aria-current="page" href="/consultas">Descarga de fotos</a>
                     </li>
-                    <li th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="offcanvasNavbarDropdown1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Mantenimiento de Solicitudes
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="offcanvasNavbarDropdown1">
-                            <li><a class="dropdown-item" href="/Solicitud">Solicitudes de Muestras Médicas</a></li>
-                            <li><a class="dropdown-item" href="/Muestra">Muestras Creadas</a></li>
-                        </ul>
-                    </li>
+
+                    <!-- botnon que nos llevara para las consultas de las  imagenes -->
                     <li class="nav-item">
-                        <form method="POST" th:action="@{/logout}">
-                            <button type="submit" class="btn btn-link nav-link">
-                                <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
-                            </button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</nav>
+                        <a class="nav-link active" href="/consultas" aria-expanded="false"> Consulta de fotos</a>
+                      </li>
+
+
+                    <!-- botnon que nos llevara para salir -->
+                      <li class="nav-item">
+                          <form method="POST" th:action="@{/logout}">
+                              <button type="submit" class="btn btn-link nav-link">
+                                  <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
+                              </button>
+                          </form>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+      </div>
+  </nav>

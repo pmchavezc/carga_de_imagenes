@@ -4,9 +4,18 @@
     <title>DASHBOARD</title>
     <link rel="stylesheet" th:href="@{/css/tabulator.min.css}">
 </head>
-<body>
 
-</body>
+<body th:replace="~{Shared/Layout::common_layout(~{::section}, ~{::script})}">
+<section class="container">
+<h1 style="text-align: center;" >PANTALLA DE INICIO</h1>
+
+    <div style="text-align: center;">
+        <img src="/images/imagen_dash.png" alt="Imagen de inicio" style="width: 50%; height: auto;">
+    </div>
+
+</section>
 <script th:src="@{/js/catalogs.js}"></script>
 <script th:src="@{/js/tabulator.min.js}"></script>
+
+</body>
 </html>
