@@ -17,8 +17,12 @@ public class HomeController {
 
     @GetMapping("/")
 
-    public String Login(){
+
+   /* public String Login(){
         return "Home/Index";
+    }*/
+    public String Login(){
+        return "Auth/dashboard";
     }
 
     @ModelAttribute

@@ -18,4 +18,5 @@ public class AuthController {
     public String Register(Cliente cliente){
         return "Auth/Register";
     }
+
 }
