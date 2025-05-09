@@ -12,54 +12,60 @@
     <!-- Formulario que envía los datos al AuthController -->
     <form>
         <div class="header">
-            <button type="submit" name="action" value="consultar">Consultar</button>
-            <button type="button" onclick="limpiarCampos()">Limpiar</button>
-            <button type="submit" name="action" value="cargar">Cargar</button>
-        </div>
+            <!-- <button type="button" onclick="/descarga" value="consultar">Consultar</button>-->
+             <button type="button" onclick="window.location.href='/descarga'">Consultar</button>
+             <button type="button" onclick="limpiarCampos()">Limpiar</button>
+             <button type="submit" name="action" value="cargar">Cargar</button>
+         </div>
 
-        <div class="grid">
-            <div class="section">
-                <label>Propietario:</label>
-                <input type="text" name="propietario">
-                <label>Fecha de Inicio:</label>
-                <input type="date" name="fechaInicio">
-                <label>Fecha Final:</label>
-                <input type="date" name="fechaFinal">
-            </div>
+         <div class="grid">
+             <div class="section">
+                 <!-- datos quemados solo para probar que se pueda escoger nos prooietarios -->
+                 <label>Propietario:</label>
+                 <select type="text" name="propietario">
+                     <option value="Juan Pérez">Juan Pérez braulio carmelino</option>
+                     <option value="Maria López">Maria López</option>
+                     <option value="Pedro Gómez">Pedro Gómez</option>
+                 </select>
+                 <label>Fecha de Inicio:</label>
+                 <input type="date" name="fechaInicio">
+                 <label>Fecha Final:</label>
+                 <input type="date" name="fechaFinal">
+             </div>
 
-            <div class="section">
-                <label>Número de Doc:</label>
-                <input type="text" name="numeroDoc">
-                <label>Fecha de Elaboración:</label>
-                <input type="date" name="fechaElaboracion">
-                <label>Fecha de Ingreso al Sistema:</label>
-                <input type="date" name="fechaIngreso">
-                <label>Propietario del Doc:</label>
-                <input type="text" name="propietarioDoc">
-                <label>Adjuntar PDF:</label>
-                <input type="file" name="adjuntarPdf">
-            </div>
-        </div>
-    </form>
+             <div class="section">
+                 <label>Número de Doc:</label>
+                 <input type="text" name="numeroDoc">
+                 <label>Fecha de Elaboración:</label>
+                 <input type="date" name="fechaElaboracion">
+                 <label>Fecha de Ingreso al Sistema:</label>
+                 <input type="date" name="fechaIngreso">
+                 <label>Propietario del Doc:</label>
+                 <input type="text" name="propietarioDoc">
+                 <label>Adjuntar PDF:</label>
+                 <input type="file" name="adjuntarPdf">
+             </div>
+         </div>
+     </form>
 
-    <div class="header">
-        <button onclick="window.history.back();">Regresar</button>
-    </div>
-</div>
+     <div class="header">
+         <button onclick="window.history.back();">Regresar</button>
+     </div>
+ </div>
 
-<script>
-    function limpiarCampos() {
-        // Selecciona todos los inputs y los limpia
-        document.querySelectorAll('input').forEach(input => {
-            if (input.type !== 'file') {
-                input.value = '';
-            } else {
-                input.value = null;
-            }
-        });
+ <script>
+     function limpiarCampos() {
+         // Selecciona todos los inputs y los limpia
+         document.querySelectorAll('input').forEach(input => {
+             if (input.type !== 'file') {
+                 input.value = '';
+             } else {
+                 input.value = null;
+             }
+         });
 
-        alert("¡Campos limpiados correctamente!");
-    }
-</script>
-</body>
-</html>
+        // alert("¡Campos limpiados correctamente!");
+     }
+ </script>
+ </body>
+ </html>

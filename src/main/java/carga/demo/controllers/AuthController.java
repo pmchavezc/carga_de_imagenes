@@ -25,4 +25,10 @@ public class AuthController {
         return "Auth/Oficial";
     }
 
+    //solo es para prueba
+    @GetMapping("/descarga")
+    public String Descarga(){
+        return "Auth/Descarga";
+    }
+
 }
