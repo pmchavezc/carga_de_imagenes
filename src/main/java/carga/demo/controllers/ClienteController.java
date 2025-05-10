@@ -53,16 +53,4 @@ public class ClienteController {
         return "redirect:/login";
     }
 
-    @GetMapping("/informacionGeneralCliente/{clienteId}")
-    public String informacionGeneralCliente(@PathVariable Long clienteId, Model model){
-        Cliente cliente = clienteService.buscarPorId(clienteId);
-
-        Map<String, String> informacionGeneralCliente = new HashMap<>();
-
-        informacionGeneralCliente.put("nombre", cliente.getNombre());
-        informacionGeneralCliente.put("nit", cliente.getNit());
-
-        model.addAttribute("informacionGeneralCliente", cliente);
-        return "redirect:/";
-    }
 }
