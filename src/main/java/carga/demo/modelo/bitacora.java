@@ -6,31 +6,26 @@ import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
 @DynamicInsert
 @DynamicUpdate
 @Entity
-@Table(name = "roles")
-public class Rol {
+@Table(name = "Bitacora")
+public class bitacora {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nombre;
-    private String descripcion;
+    private Long id_usuario;
+    private String accion;
 
     @Column(nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime fechaCreacion;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaAccion;
 
-    private LocalDateTime fechaActualizacion;
-    private Boolean eliminado;
-
-    @OneToMany(mappedBy = "rol")
-    private List<Usuario> usuarioList = new ArrayList<>();
+    private String ip_usuario;
+    private Long id_documento;
 
 }

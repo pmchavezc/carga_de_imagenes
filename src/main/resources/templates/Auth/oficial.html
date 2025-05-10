@@ -23,7 +23,7 @@
                  <!-- datos quemados solo para probar que se pueda escoger nos prooietarios -->
                  <label>Propietario:</label>
                  <select type="text" name="propietario">
-                     <option value="Juan Pérez">silvia</option>
+                     <option value="en blanco"> </option>
                      <option value="Juan Pérez">Juan Pérez braulio carmelino</option>
                      <option value="Maria López">Maria López</option>
                      <option value="Pedro Gómez">Pedro Gómez</option>
@@ -65,6 +65,9 @@
              }
          });
 
+         document.querySelectorAll('select').forEach(select => {
+             select.selectedIndex = 0; // Reinicia al primer valor del <select>
+         });
         // alert("¡Campos limpiados correctamente!");
      }
  </script>

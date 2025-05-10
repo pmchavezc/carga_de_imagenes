@@ -41,7 +41,6 @@ public class ClienteController {
         Rol rol = rolService.buscarPorId(2L);
         cliente.getUsuario().setRol(rol);
         cliente.getUsuario().setContrasenia(Utils.encriptarContrasenia(cliente.getUsuario().getContrasenia()));
-        cliente.setNumeroExpediente(Utils.generarNumeroDeExpediente());
         cliente.getUsuario().setTipoUsuario("externo");
         cliente.getUsuario().setNombreUsuario(cliente.getNombre() + " " + cliente.getApellido());
 

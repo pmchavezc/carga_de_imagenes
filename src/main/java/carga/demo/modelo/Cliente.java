@@ -20,7 +20,6 @@ public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String numeroExpediente;
 
     @NotEmpty(message = "El número de CUI no puede estar vacío")
     @Size(min = 13, max = 13, message = "El número de CUI debe tener 13 dígitos")

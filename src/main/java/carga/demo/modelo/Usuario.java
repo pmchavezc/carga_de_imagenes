@@ -9,6 +9,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -39,6 +40,9 @@ public class Usuario {
     @ManyToOne
     @JoinColumn (name ="rol_id" )
     private Rol rol;
+
+    @OneToOne (mappedBy = "usuario")
+    private Cliente cliente;
 
     @PrePersist
     public void prePersist(){
