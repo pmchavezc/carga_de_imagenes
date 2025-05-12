@@ -1,12 +1,23 @@
 package carga.demo.servicios;
 
 import carga.demo.modelo.Documento;
+import carga.demo.repositorio.DocumentoRepositorio;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class DocumentoServiceImpl implements CrudService<Documento> {
+
+    @Autowired
+    private DocumentoRepositorio documentoRepositorio;
+
+
+    public void guardarDocumento(Documento documento) {
+        documentoRepositorio.save(documento);
+    }
+
 
     @Override
     public List<Documento> listarTodos() {

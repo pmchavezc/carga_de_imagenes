@@ -9,67 +9,85 @@
 
 <body>
 <div class="container">
-    <!-- Formulario que envía los datos al AuthController -->
-    <form>
+
+    <!-- Primer formulario para la consulta -->
+    <form action="/descarga" method="GET">
         <div class="header">
-            <!-- <button type="button" onclick="/descarga" value="consultar">Consultar</button>-->
-             <button type="button" onclick="window.location.href='/descarga'">Consultar</button>
-             <button type="button" onclick="limpiarCampos()">Limpiar</button>
-             <button type="submit" name="action" value="cargar">Cargar</button>
-         </div>
+            <!-- Botón para consultar documentos -->
+            <button type="submit" name="action" value="consultar">Consultar</button>
+            <button type="button" onclick="limpiarCampos()">Limpiar</button>
+        </div>
 
-         <div class="grid">
-             <div class="section">
-                 <!-- datos quemados solo para probar que se pueda escoger nos prooietarios -->
-                 <label>Propietario:</label>
-                 <select type="text" name="propietario">
-                     <option value="en blanco"> </option>
-                     <option value="Juan Pérez">Juan Pérez braulio carmelino</option>
-                     <option value="Maria López">Maria López</option>
-                     <option value="Pedro Gómez">Pedro Gómez</option>
-                 </select>
-                 <label>Fecha de Inicio:</label>
-                 <input type="date" name="fechaInicio">
-                 <label>Fecha Final:</label>
-                 <input type="date" name="fechaFinal">
-             </div>
+        <div class="grid">
+            <!-- Sección de Propietario y Fechas de Inicio/Final (Formulario de Consulta) -->
+            <div class="section">
+                <label>Propietario:</label>
+                <select name="propietario" required>
+                    <option value="en blanco"> </option>
+                    <option value="Juan Pérez">Juan Pérez braulio carmelino</option>
+                    <option value="Maria López">Maria López</option>
+                    <option value="Pedro Gómez">Pedro Gómez</option>
+                </select>
 
-             <div class="section">
-                 <label>Número de Doc:</label>
-                 <input type="text" name="numeroDoc">
-                 <label>Fecha de Elaboración:</label>
-                 <input type="date" name="fechaElaboracion">
-                 <label>Fecha de Ingreso al Sistema:</label>
-                 <input type="date" name="fechaIngreso">
-                 <label>Propietario del Doc:</label>
-                 <input type="text" name="propietarioDoc">
-                 <label>Adjuntar PDF:</label>
-                 <input type="file" name="adjuntarPdf">
-             </div>
-         </div>
-     </form>
+                <label>Fecha de Inicio:</label>
+                <input type="date" name="fechaInicio" required>
 
-     <div class="header">
-         <button onclick="window.history.back();">Regresar</button>
-     </div>
- </div>
+                <label>Fecha Final:</label>
+                <input type="date" name="fechaFinal" required>
+            </div>
+        </div>
+    </form>
 
- <script>
-     function limpiarCampos() {
-         // Selecciona todos los inputs y los limpia
-         document.querySelectorAll('input').forEach(input => {
-             if (input.type !== 'file') {
-                 input.value = '';
-             } else {
-                 input.value = null;
-             }
-         });
+    <!-- Segundo formulario para la carga de documentos -->
+    <form action="/cargar_datos" method="POST" enctype="multipart/form-data">
+        <div class="header">
+            <!-- Botón para cargar documentos -->
+            <button type="submit" name="action" value="cargar">Cargar</button>
+        </div>
 
-         document.querySelectorAll('select').forEach(select => {
-             select.selectedIndex = 0; // Reinicia al primer valor del <select>
-         });
-        // alert("¡Campos limpiados correctamente!");
-     }
- </script>
- </body>
- </html>
+        <div class="grid">
+            <!-- Sección de Información del Documento (Formulario de Carga) -->
+            <div class="section">
+                <label>Número de Doc:</label>
+                <input type="text" name="numeroDoc" required>
+
+                <label>Fecha de Elaboración:</label>
+                <input type="date" name="fechaElaboracion" required>
+
+                <label>Fecha de Ingreso al Sistema:</label>
+                <input type="date" name="fechaIngreso" required>
+
+                <label>Propietario del Doc:</label>
+                <input type="text" name="propietarioDoc" required>
+
+                <label>Adjuntar PDF:</label>
+                <input type="file" name="adjuntarPdf" required>
+            </div>
+        </div>
+    </form>
+
+    <div class="header">
+        <button onclick="window.history.back();">Regresar</button>
+    </div>
+
+</div>
+
+<script>
+    // Función para limpiar los campos de los formularios
+    function limpiarCampos() {
+        document.querySelectorAll('input').forEach(input => {
+            if (input.type !== 'file') {
+                input.value = '';
+            } else {
+                input.value = null;
+            }
+        });
+
+        document.querySelectorAll('select').forEach(select => {
+            select.selectedIndex = 0; // Reinicia al primer valor del <select>
+        });
+    }
+</script>
+
+</body>
+</html>

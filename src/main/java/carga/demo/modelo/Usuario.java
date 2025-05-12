@@ -37,12 +37,16 @@ public class Usuario {
 
     private LocalDateTime fechaCreacion;
 
+    @OneToMany (mappedBy = "usuario")
+    private List<Documento> documentos;
+
     @ManyToOne
     @JoinColumn (name ="rol_id" )
     private Rol rol;
 
     @OneToOne (mappedBy = "usuario")
     private Cliente cliente;
+
 
     @PrePersist
     public void prePersist(){

@@ -2,6 +2,7 @@ package carga.demo.modelo;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
@@ -24,7 +25,8 @@ public class Documento {
     private String propietario;
 
     private int numero_documento;
-    @NotEmpty (message = "La fecha no puede estar vacía")
+
+    @NotNull(message = "La fecha de elaboración no puede estar vacía")
     private Date fecha_elaboracion;
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
@@ -40,5 +42,6 @@ public class Documento {
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
+
 
 }
