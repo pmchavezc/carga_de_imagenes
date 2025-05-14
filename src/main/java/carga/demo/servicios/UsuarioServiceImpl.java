@@ -12,6 +12,7 @@ public class UsuarioServiceImpl implements CrudService<Usuario>{
     private final UsuarioRepositorio usuarioRepositorio;
 
     public UsuarioServiceImpl(UsuarioRepositorio usuarioRepositorio){
+
         this.usuarioRepositorio = usuarioRepositorio;
     }
 
@@ -29,6 +30,7 @@ public class UsuarioServiceImpl implements CrudService<Usuario>{
     public Usuario guardar(Usuario entidad) {
         return usuarioRepositorio.save(entidad);
     }
+
 
     @Override
     public void eliminar(Long id) {

@@ -7,4 +7,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DocumentoRepositorio extends JpaRepository<Documento, Long> {
 
+    // Método para buscar un documento por su número de documento
+
+    Documento findDocumentoByNumero(int numero);  // Asegúrate de que esta sea la propiedad correcta
+
 }

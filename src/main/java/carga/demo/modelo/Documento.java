@@ -24,7 +24,9 @@ public class Documento {
     @NotEmpty(message = "El propietario no puede estar vacía")
     private String propietario;
 
-    private int numero_documento;
+    //este es el numero de documento
+    @Column(name = "numero")
+    private int numero;
 
     @NotNull(message = "La fecha de elaboración no puede estar vacía")
     private Date fecha_elaboracion;
@@ -36,11 +38,14 @@ public class Documento {
     @NotEmpty (message = "el archivo no puede estar vacía")
     private String adjuntar_Archivo;
     private String tamaño_archivo;
+
+    @Column(nullable = false)
     private String ip_usuario;
+
     private String accion;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
+    @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
 

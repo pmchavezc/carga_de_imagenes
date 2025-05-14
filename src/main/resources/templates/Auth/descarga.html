@@ -8,43 +8,76 @@
     <link rel="stylesheet" href="/CSS/descarga.css">
 </head>
 
-
 <body>
 
 <div class="container descarga-container">
-    <form>
-    <div class="header">
-        <button id="descargar" class="btn-descargar">Descargar Todos</button>
-    </div>
+    <form id="formDescarga">
+        <div class="header">
+            <button id="descargar" class="btn-descargar">Descargar Todos</button>
+        </div>
 
-    <table class="tabla-descarga">
-        <thead>
-        <tr>
-            <th>Propietario</th>
-            <th>Fecha de Inicio</th>
-            <th>Fecha Final</th>
-            <th>Fecha de Elaboración</th>
-            <th>Documento</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <!-- dato quemado para que ver como esta la tabla para las descargas -->
-        <tr>
-            <td>Pedro Gómez</td>
-            <td>2025-03-15</td>
-            <td>2025-03-20</td>
-            <td>2025-03-18</td>
-            <td>reporte.xlsx</td>
-            <td><button class="btn-descargar">Descargar</button></td>
-        </tr>
-        </tbody>
-    </table>
-</form>
+        <table class="tabla-descarga" id="tablaDescarga">
+            <thead>
+            <tr>
+                <th>Propietario</th>
+                <th>Documento</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Los documentos filtrados se llenarán aquí -->
+            </tbody>
+        </table>
+    </form>
+
     <div class="header">
         <button onclick="window.history.back();">Regresar</button>
     </div>
 </div>
 
-</body>
+<script>
+    // Cargar los documentos filtrados
+    async function cargarDocumentos() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const propietarioId = urlParams.get('propietario');
+        const fechaInicio = urlParams.get('fechaInicio');
+        const fechaFinal = urlParams.get('fechaFinal');
 
+        try {
+            const response = await fetch(`/getDocumentos?propietario=${propietarioId}&fechaInicio=${fechaInicio}&fechaFinal=${fechaFinal}`);
+            const documentos = await response.json();
+
+            const tablaDescarga = document.getElementById("tablaDescarga").getElementsByTagName('tbody')[0];
+            documentos.forEach(doc => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${doc.propietario}</td>
+                    <td>${doc.nombreArchivo}</td>
+                    <td>
+                        <button class="btn-descargar" onclick="descargarDocumento('${doc.id}')">Descargar</button>
+                    </td>
+                `;
+                tablaDescarga.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error al cargar documentos:', error);
+        }
+    }
+
+    // Descargar un solo documento
+    function descargarDocumento(id) {
+        window.location.href = `/descargarDocumento?id=${id}`;
+    }
+
+    // Descargar todos los documentos
+    document.getElementById("descargar").onclick = function (event) {
+        event.preventDefault();
+        window.location.href = `/descargarTodos?propietario=${new URLSearchParams(window.location.search).get('propietario')}`;
+    };
+
+    // Cargar los documentos al cargar la página
+    window.onload = cargarDocumentos;
+</script>
+
+</body>
 </html>

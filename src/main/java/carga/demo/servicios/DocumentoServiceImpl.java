@@ -13,6 +13,10 @@ public class DocumentoServiceImpl implements CrudService<Documento> {
     @Autowired
     private DocumentoRepositorio documentoRepositorio;
 
+    public boolean existeDocumento(String numero) {
+        // Aquí buscamos el documento por número de documento
+        return documentoRepositorio.findDocumentoByNumero(Integer.parseInt(numero)) != null;
+    }
 
     public void guardarDocumento(Documento documento) {
         documentoRepositorio.save(documento);
@@ -43,4 +47,5 @@ public class DocumentoServiceImpl implements CrudService<Documento> {
     public void actualizar(Documento entidad) {
 
     }
+
 }
