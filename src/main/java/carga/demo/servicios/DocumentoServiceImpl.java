@@ -34,7 +34,7 @@ public class DocumentoServiceImpl implements CrudService<Documento> {
     }
 
     @Override
-    public Documento guardar(Documento entidad) {
+    public Documento guardar(Documento documento) {
         return null;
     }
 

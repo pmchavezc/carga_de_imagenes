@@ -1,8 +1,10 @@
 package carga.demo.controllers;
 
 import carga.demo.modelo.Documento;
+import carga.demo.modelo.Usuario;
 import carga.demo.servicios.DocumentoServiceImpl;
 import carga.demo.servicios.UsuarioServiceImpl;
+import carga.demo.providers.CurrentUserProvider;  // Importar para obtener el ID del usuario
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -30,6 +32,9 @@ public class DocumentoController {
     @Autowired
     private UsuarioServiceImpl usuarioService;
 
+    @Autowired
+    private CurrentUserProvider currentUserProvider;  // Inyectamos para obtener el ID del usuario logueado
+
     @GetMapping("/verificarDocumento")
     @ResponseBody
     public Map<String, Boolean> verificarDocumento(@RequestParam("numeroDoc") String numeroDoc) {
@@ -39,7 +44,7 @@ public class DocumentoController {
         return response;
     }
 
-    //tamaño máximo del archivo en bytes
+    // Tamaño máximo del archivo en bytes
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
 
     @PostMapping("/cargar_datos")
@@ -52,23 +57,29 @@ public class DocumentoController {
             HttpServletRequest request
     ){
 
-            // 1. Validación de la fecha de elaboración no sea mayor que la fecha de ingreso
-            if (fechaElaboracion.after(fechaIngreso)) {
-                return "error";  // Redirigir a una página de error o mostrar mensaje de error
-            }
+        // 1. Validación de la fecha de elaboración no sea mayor que la fecha de ingreso
+        if (fechaElaboracion.after(fechaIngreso)) {
+            return "error";  // Redirigir a una página de error o mostrar mensaje de error
+        }
 
-            // 2. Validar que el archivo no sea mayor a 10 MB
-            if (adjuntarPdf.getSize() > MAX_FILE_SIZE) {
-                return "error";  // Redirigir a una página de error o mostrar mensaje de error
-            }
+        // 2. Validar que el archivo no sea mayor a 10 MB
+        if (adjuntarPdf.getSize() > MAX_FILE_SIZE) {
+            return "error";  // Redirigir a una página de error o mostrar mensaje de error
+        }
 
-            // 3. Validación para evitar duplicación de documentos
-            if (documentoService.existeDocumento(numeroDoc)) {
-                return "error";  // Redirigir a una página de error o mostrar mensaje de error
-            }
+        // 3. Validación para evitar duplicación de documentos
+        if (documentoService.existeDocumento(numeroDoc)) {
+            return "error";  // Redirigir a una página de error o mostrar mensaje de error
+        }
 
+        // 5. Obtener el ID del usuario logueado
+        Long userId = currentUserProvider.getCurrentUserId();  // Usamos el método para obtener el ID del usuario autenticado
 
-        // 5. Obtener la IP del usuario
+        if (userId == null) {
+            return "error";  // Si no se puede obtener el ID del usuario, redirigir a error
+        }
+
+        // 6. Obtener la IP del usuario
         String ipUsuario = obtenerIpUsuario(request);  // Usar la función para obtener la IP
 
         // Guardar el archivo PDF
@@ -100,8 +111,10 @@ public class DocumentoController {
             documento.setIp_usuario(ipUsuario);  // Aquí deberías obtener la IP real del usuario
             documento.setAccion("Cargar");  // El tipo de acción
             // Asignar el usuario al documento
+            Usuario usuario = usuarioService.buscarPorId(userId);
+            documento.setUsuario(usuario);
 
-            documentoService.guardarDocumento(documento);
+            documentoService.guardarDocumento(documento);  // Guardar el documento en la base de datos
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -110,6 +123,7 @@ public class DocumentoController {
 
         return "redirect:/oficial";  // Redirigir a otra página, como la página de oficial
     }
+
     private String obtenerIpUsuario(HttpServletRequest request) {
         // Verificar si la solicitud contiene el encabezado X-Forwarded-For (para casos de proxies o balanceadores de carga)
         String ip = request.getHeader("X-Forwarded-For");
@@ -127,7 +141,4 @@ public class DocumentoController {
         // Retornar la IP del cliente
         return ip;
     }
-
-
-
 }
