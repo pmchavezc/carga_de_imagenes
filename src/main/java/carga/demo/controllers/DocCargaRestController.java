@@ -57,28 +57,28 @@ public class DocCargaRestController {
             HttpServletRequest request
     ){
 
-        // 1. Validación de la fecha de elaboración no sea mayor que la fecha de ingreso
+        //Validación de la fecha de elaboración no sea mayor que la fecha de ingreso
         if (fechaElaboracion.after(fechaIngreso)) {
             return ResponseEntity
                     .badRequest()
                     .body(ResponseWrapper.error("La fecha de elaboración no puede ser mayor a la fecha de ingreso"));  // Redirigir a una página de error o mostrar mensaje de error
         }
 
-        // 2. Validar que el archivo no sea mayor a 10 MB
+        // Validar que el archivo no sea mayor a 10 MB
         if (adjuntarPdf.getSize() > MAX_FILE_SIZE) {
             return ResponseEntity
                     .badRequest()
                     .body(ResponseWrapper.error("El archivo debe ser menor a 10 MB"));  // Redirigir a una página de error o mostrar mensaje de error
         }
 
-        // 3. Validación para evitar duplicación de documentos
+        // Validación para evitar duplicación de documentos
         if (documentoService.existeDocumento(numeroDoc)) {
             return ResponseEntity
                     .badRequest()
                     .body(ResponseWrapper.error("El número de documento ya existe"));  // Redirigir a una página de error o mostrar mensaje de error
         }
 
-        // 5. Obtener el ID del usuario logueado
+        // Obtener el ID del usuario logueado
         Long userId = currentUserProvider.getCurrentUserId();  // Usamos el método para obtener el ID del usuario autenticado
 
         if (userId == null) {
@@ -87,12 +87,12 @@ public class DocCargaRestController {
                     .body(ResponseWrapper.error("Usuario no valido"));  // Si no se puede obtener el ID del usuario, redirigir a error
         }
 
-        // 6. Obtener la IP del usuario
-        String ipUsuario = obtenerIpUsuario(request);  // Usar la función para obtener la IP
+        // Obtener la IP del usuario
+        String ipUsuario = obtenerIpUsuario(request);  // Usamos la función para obtener la IP
 
         // Guardar el archivo PDF
         String fileName = adjuntarPdf.getOriginalFilename();
-        String uploadDir = "uploads/";  // Directorio donde guardarás los archivos
+        String uploadDir = "uploads/";  // Directorio donde guardamos los archivos
         Path uploadPath = Paths.get(uploadDir);
 
         if (!Files.exists(uploadPath)) {
@@ -124,25 +124,25 @@ public class DocCargaRestController {
 
 
         try {
-            // Guardar el archivo en el servidor
+            // Guardamos el archivo en el servidor
             Path filePath = uploadPath.resolve(fileName);
             adjuntarPdf.transferTo(filePath);
 
-            // Crear un nuevo documento
+            // Creamos un nuevo documento
             Documento documento = new Documento();
-            documento.setNumero(Integer.parseInt(numeroDoc));  // Asegúrate de que el número de documento sea un valor válido
+            documento.setNumero(Integer.parseInt(numeroDoc));  // nos aseguramos que el número de documento sea un valor válido
             documento.setFechaElaboracion(fechaElaboracion);
             documento.setFecha_ingreso(fechaIngreso);
             documento.setPropietario(propietarioDoc);
-            documento.setAdjuntar_Archivo(fileName);  // Guardar solo el nombre del archivo
+            documento.setAdjuntar_Archivo(fileName);  // guardamos solo el nombre del archivo
             documento.setTamaño_archivo(String.valueOf(adjuntarPdf.getSize()));  // Tamaño del archivo
-            documento.setIp_usuario(ipUsuario);  // Aquí deberías obtener la IP real del usuario
+            documento.setIp_usuario(ipUsuario);  // obtenemos la IP real del usuario
             documento.setAccion("Cargar");  // El tipo de acción
             // Asignar el usuario al documento
             Usuario usuario = usuarioService.buscarPorId(userId);
             documento.setUsuario(usuario);
 
-            documentoService.guardarDocumento(documento);  // Guardar el documento en la base de datos
+            documentoService.guardarDocumento(documento);  // Guardamos el documento en la base de datos
 
         } catch (IOException e) {
             e.printStackTrace();

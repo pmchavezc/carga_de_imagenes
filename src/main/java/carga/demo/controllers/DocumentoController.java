@@ -32,8 +32,9 @@ public class DocumentoController {
     @Autowired
     private UsuarioServiceImpl usuarioService;
 
+    // Inyectamos para obtener el ID del usuario logueado
     @Autowired
-    private CurrentUserProvider currentUserProvider;  // Inyectamos para obtener el ID del usuario logueado
+    private CurrentUserProvider currentUserProvider;
     @Autowired
     private DocumentoServiceImpl documentoServiceImpl;
 
@@ -54,7 +55,7 @@ public class DocumentoController {
         // Verificar que las fechas sean correctas
         if (fechaInicio.after(fechaFinal)) {
             model.addAttribute("error", "La fecha de inicio no puede ser mayor que la fecha final.");
-            return "Auth/Oficial";  // Redirigir a una página de error si las fechas son incorrectas
+            return "Auth/Oficial";
         }
 
         // Convertir java.util.Date a java.sql.Date
@@ -67,7 +68,7 @@ public class DocumentoController {
         // Verificar si no hay documentos
         if (documentos.isEmpty()) {
             model.addAttribute("error", "No se encontraron documentos para los parámetros dados.");
-            return "Auth/Oficial";  // Página de error si no hay documentos
+            return "Auth/Oficial";
         }
 
         // Pasar los documentos al modelo
@@ -93,7 +94,7 @@ public class DocumentoController {
             }
 
             // Definir ruta correcta
-            String basePath = "uploads/";  // CAMBIA ESTA RUTA al lugar real
+            String basePath = "uploads/";
             String fileName = doc.getAdjuntar_Archivo();
 
             // Asegurarnos de que no hay espacios o caracteres raros
@@ -129,9 +130,9 @@ public class DocumentoController {
         }
     }
 
-    /**
-     * Descarga de todos los documentos en un ZIP
-     */
+
+     // Descarga de todos los documentos en un ZIP
+
     @GetMapping("/descargarTodos")
     public void descargarTodos(
             @RequestParam String propietario,
