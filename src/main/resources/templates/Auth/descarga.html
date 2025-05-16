@@ -3,20 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Descarga Documentos</title>
+    <title>Descargar Documentos</title>
     <link rel="stylesheet" href="/CSS/style.css">
-    <link rel="stylesheet" href="/CSS/descarga.css">
 </head>
-
 <body>
 
-<div class="container descarga-container">
-    <form id="formDescarga">
-        <div class="header">
-            <button id="descargar" class="btn-descargar">Descargar Todos</button>
-        </div>
+<div class="container">
+    <!-- Información de la consulta -->
+    <div>
+        <h2>Consulta de Documentos</h2>
+        <p>Propietario: <span th:text="${propietario}"></span></p>
+        <p>Fecha de Inicio: <span th:text="${fechaInicio}"></span></p>
+        <p>Fecha Final: <span th:text="${fechaFinal}"></span></p>
+    </div>
 
-        <table class="tabla-descarga" id="tablaDescarga">
+    <!-- Botón para descargar todos los documentos -->
+    <form action="/descargarTodos" method="GET">
+        <input type="hidden" name="propietario" th:value="${propietario}">
+        <input type="hidden" name="fechaInicio" th:value="${fechaInicio}">
+        <input type="hidden" name="fechaFinal" th:value="${fechaFinal}">
+        <button type="submit" class="btn-descargar">Descargar Todos</button>
+    </form>
+
+    <!-- Tabla para mostrar los documentos -->
+    <div>
+        <h3>Lista de Documentos</h3>
+        <table>
             <thead>
             <tr>
                 <th>Propietario</th>
@@ -25,59 +37,23 @@
             </tr>
             </thead>
             <tbody>
-            <!-- Los documentos filtrados se llenarán aquí -->
+            <tr th:each="doc : ${documentos}">
+                <td th:text="${doc.propietario}"></td>
+                <td th:text="${doc.adjuntar_Archivo}"></td>
+                <td>
+                    <!-- Enlace para descargar el documento individual -->
+                    <a th:href="@{/descargarDocumento(id=${doc.id})}" class="btn-descargar">Descargar</a>
+                </td>
+            </tr>
             </tbody>
         </table>
-    </form>
+    </div>
 
+    <!-- Botón para regresar -->
     <div class="header">
         <button onclick="window.history.back();">Regresar</button>
     </div>
 </div>
-
-<script>
-    // Cargar los documentos filtrados
-    async function cargarDocumentos() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const propietarioId = urlParams.get('propietario');
-        const fechaInicio = urlParams.get('fechaInicio');
-        const fechaFinal = urlParams.get('fechaFinal');
-
-        try {
-            const response = await fetch(`/getDocumentos?propietario=${propietarioId}&fechaInicio=${fechaInicio}&fechaFinal=${fechaFinal}`);
-            const documentos = await response.json();
-
-            const tablaDescarga = document.getElementById("tablaDescarga").getElementsByTagName('tbody')[0];
-            documentos.forEach(doc => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${doc.propietario}</td>
-                    <td>${doc.nombreArchivo}</td>
-                    <td>
-                        <button class="btn-descargar" onclick="descargarDocumento('${doc.id}')">Descargar</button>
-                    </td>
-                `;
-                tablaDescarga.appendChild(row);
-            });
-        } catch (error) {
-            console.error('Error al cargar documentos:', error);
-        }
-    }
-
-    // Descargar un solo documento
-    function descargarDocumento(id) {
-        window.location.href = `/descargarDocumento?id=${id}`;
-    }
-
-    // Descargar todos los documentos
-    document.getElementById("descargar").onclick = function (event) {
-        event.preventDefault();
-        window.location.href = `/descargarTodos?propietario=${new URLSearchParams(window.location.search).get('propietario')}`;
-    };
-
-    // Cargar los documentos al cargar la página
-    window.onload = cargarDocumentos;
-</script>
 
 </body>
 </html>

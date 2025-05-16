@@ -10,7 +10,7 @@
 
 <div class="container">
     <!-- Primer formulario para la consulta -->
-    <form action="/descarga" method="GET" id="formConsulta">
+    <form action="/getDocumentos" method="GET" id="formConsulta">
         <div class="header">
             <!-- Botón para consultar documentos -->
             <button type="submit" name="action" value="consultar">Consultar</button>
@@ -22,7 +22,7 @@
             <div class="section">
                 <label>Propietario:</label>
                 <select name="propietario" id="propietario" required>
-                    <!-- Los propietarios se llenarán desde el backend -->
+                    <option th:each="propietario : ${propietarios}" th:value="${propietario}" th:text="${propietario}"></option>
                 </select>
 
                 <label>Fecha de Inicio:</label>
@@ -86,25 +86,28 @@
     }
 
     // Cargar los propietarios en el desplegable
-    async function cargarPropietarios() {
+        async function cargarPropietarios() {
         try {
-            const response = await fetch('/getPropietarios');
-            const propietarios = await response.json();
-
-            const propietarioSelect = document.getElementById("propietario");
-            propietarios.forEach(propietario => {
-                const option = document.createElement("option");
-                option.value = propietario.id;
-                option.textContent = propietario.nombre;
-                propietarioSelect.appendChild(option);
-            });
-        } catch (error) {
-            console.error('Error al cargar propietarios:', error);
-        }
+        const response = await fetch('/getPropietarios');
+        const propietarios = await response.json();
+        const select = document.getElementById('propietario');
+        propietarios.forEach(p => {
+        const option = document.createElement('option');
+        option.value = p;
+        option.textContent = p;
+        select.appendChild(option);
+    });
+    } catch (e) {
+        console.error('Error cargando propietarios', e);
+    }
     }
 
-    // Cargar los propietarios al cargar la página
-    window.onload = cargarPropietarios;
+        function limpiarCampos() {
+        document.getElementById('formConsulta').reset();
+    }
+
+        window.onload = cargarPropietarios;
+</script>
 </script>
 
 </body>
