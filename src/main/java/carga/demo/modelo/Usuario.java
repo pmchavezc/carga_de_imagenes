@@ -37,7 +37,7 @@ public class Usuario {
 
     private LocalDateTime fechaCreacion;
 
-    @OneToMany (mappedBy = "usuario")
+    @OneToMany (mappedBy = "usuario", fetch = FetchType.LAZY)
     private List<Documento> documentos;
 
     @ManyToOne

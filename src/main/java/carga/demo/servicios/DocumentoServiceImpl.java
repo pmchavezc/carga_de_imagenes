@@ -5,6 +5,7 @@ import carga.demo.repositorio.DocumentoRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.List;
 
 @Service
@@ -23,6 +24,16 @@ public class DocumentoServiceImpl implements CrudService<Documento> {
     }
 
 
+    // metodo para los metodos de buscar los propietarario
+    public List<String> gerPropietarios() {
+        return documentoRepositorio.findDistinctPropietarios();
+    }
+
+    // metodo para buscar los documentos por propietario y rango de fecha
+    public List<Documento> getDocumentosPorFechasYPropietario(String propietario, Date fechaInicio, Date fechaFin) {
+        return documentoRepositorio.findByPropietarioAndFechaElaboracionBetween(propietario, fechaInicio, fechaFin);
+    }
+
     @Override
     public List<Documento> listarTodos() {
         return List.of();
@@ -34,7 +45,7 @@ public class DocumentoServiceImpl implements CrudService<Documento> {
     }
 
     @Override
-    public Documento guardar(Documento entidad) {
+    public Documento guardar(Documento documento) {
         return null;
     }
 

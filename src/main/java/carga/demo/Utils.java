@@ -1,7 +1,12 @@
 package carga.demo;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -82,5 +87,29 @@ public class Utils {
     public static Date convertirLocalDateADate(LocalDate localDate) {
         // Convierte de LocalDate a Date
         return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    public static boolean isFileEncryptedOrEmptyBody(MultipartFile file) throws IOException {
+        File tempFile = File.createTempFile("temp", ".pdf");
+        file.transferTo(tempFile);
+        try (PDDocument pdDocument = PDDocument.load(new File(tempFile.getAbsolutePath()))) {
+            if (!pdDocument.isEncrypted()) {
+                return isFileEmptyBody(pdDocument);
+            }else {
+                return true;
+            }
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
+    public static boolean isFileEmptyBody(PDDocument file) throws IOException {
+        try  {
+            PDFTextStripper pdfTextStripper = new PDFTextStripper();
+            String text = pdfTextStripper.getText(file);
+            return text.trim().isEmpty();
+        } catch (Exception e) {
+            return true;
+        }
     }
 }
