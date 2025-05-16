@@ -19,13 +19,12 @@ public class AuthController {
         return "Auth/Register";
     }
 
-   @GetMapping("/oficial")
+    @GetMapping("/oficial")
     public String Oficial(){
         return "Auth/Oficial";
     }
-
-    //solo es para prueba
-    @GetMapping("/descarga")
+    // Solo es para prueba
+    @GetMapping("/descargaAuth")
     public String Descarga(){
         return "Auth/Descarga";
     }

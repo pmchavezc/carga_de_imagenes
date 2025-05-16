@@ -21,15 +21,17 @@ public class Documento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotEmpty(message = "El propietario no puede estar vacía")
+    @Column (nullable = false)
     private String propietario;
 
     //este es el numero de documento
     @Column(name = "numero")
     private int numero;
 
-    @NotNull(message = "La fecha de elaboración no puede estar vacía")
-    private Date fecha_elaboracion;
+    @Column(name = "fecha_elaboracion", nullable = false)
+    private Date fechaElaboracion;
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
