@@ -41,7 +41,7 @@ public class DocumentoServiceImpl implements CrudService<Documento> {
 
     @Override
     public Documento buscarPorId(Long id) {
-        return null;
+        return documentoRepositorio.findById(id).orElse(null);
     }
 
     @Override

@@ -13,17 +13,22 @@
     <div>
         <h2>Consulta de Documentos</h2>
         <p>Propietario: <span th:text="${propietario}"></span></p>
-        <p>Fecha de Inicio: <span th:text="${fechaInicio}"></span></p>
-        <p>Fecha Final: <span th:text="${fechaFinal}"></span></p>
+        <p>Fecha de Inicio: <span th:text="${#dates.format(fechaInicio, 'yyyy-MM-dd')}"></span></p>
+        <p>Fecha Final: <span th:text="${#dates.format(fechaFinal, 'yyyy-MM-dd')}"></span></p>
     </div>
 
     <!-- Botón para descargar todos los documentos -->
-    <form action="/descargarTodos" method="GET">
+    <form id="formDescargarTodos" action="/descargarTodos" method="GET">
         <input type="hidden" name="propietario" th:value="${propietario}">
-        <input type="hidden" name="fechaInicio" th:value="${fechaInicio}">
-        <input type="hidden" name="fechaFinal" th:value="${fechaFinal}">
-        <button type="submit" class="btn-descargar">Descargar Todos</button>
+        <input type="hidden" name="fechaInicio" th:value="${#dates.format(fechaInicio, 'yyyy-MM-dd')}">
+        <input type="hidden" name="fechaFinal" th:value="${#dates.format(fechaFinal, 'yyyy-MM-dd')}">
+        <button type="submit" class="btn-descargar" onclick="mostrarCargando()">Descargar Todos</button>
     </form>
+
+    <!-- Indicador de carga -->
+    <div id="loading" style="display:none;">
+        <p>Generando archivo ZIP, por favor espera...</p>
+    </div>
 
     <!-- Tabla para mostrar los documentos -->
     <div>
@@ -55,5 +60,20 @@
     </div>
 </div>
 
+<!-- Script para manejar las descargas -->
+<script>
+    // Función para mostrar el indicador de carga
+    function mostrarCargando() {
+        document.getElementById("loading").style.display = "block";
+    }
+
+    // Función para descargar un documento individual
+    function descargarDocumento(id) {
+        const url = `/descargarDocumento?id=${id}`;
+        window.location.href = url;
+    }
+</script>
+
 </body>
 </html>
+

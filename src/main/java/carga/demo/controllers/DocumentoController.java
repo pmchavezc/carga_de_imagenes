@@ -87,24 +87,31 @@ public class DocumentoController {
             Documento doc = documentoServiceImpl.buscarPorId(id);
 
             if (doc == null) {
+                System.out.println("⚠️ Documento no encontrado para ID: " + id);
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Documento no encontrado");
                 return;
             }
 
-            Path file = Paths.get("uploads/").resolve(doc.getAdjuntar_Archivo());
+            // Definir ruta correcta
+            String basePath = "uploads/";  // CAMBIA ESTA RUTA al lugar real
+            String fileName = doc.getAdjuntar_Archivo();
+
+            // Asegurarnos de que no hay espacios o caracteres raros
+            fileName = fileName.trim().replaceAll("[^a-zA-Z0-9\\.\\-\\_\\(\\)\\s]", "_");
+
+            // Generar el path absoluto
+            Path file = Paths.get(basePath, fileName);
+            System.out.println("Ruta completa del archivo: " + file.toAbsolutePath());
+            System.out.println("El archivo existe? " + Files.exists(file));
 
             if (!Files.exists(file)) {
+                System.out.println("⚠️ Archivo no encontrado en el servidor: " + file.toAbsolutePath());
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Archivo no encontrado en el servidor");
                 return;
             }
 
-            String mimeType = Files.probeContentType(file);
-            if (mimeType == null) {
-                mimeType = "application/octet-stream";
-            }
-
-            response.setContentType(mimeType);
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + doc.getAdjuntar_Archivo() + "\"");
+            response.setContentType(Files.probeContentType(file));
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 
             try (InputStream fis = Files.newInputStream(file);
                  OutputStream os = response.getOutputStream()) {
@@ -115,35 +122,38 @@ public class DocumentoController {
                     os.write(buffer, 0, length);
                 }
                 os.flush();
+                System.out.println("✅ Descarga completada.");
             }
         } catch (IOException e) {
-            try {
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al descargar el archivo");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            e.printStackTrace();
         }
     }
 
-
-    // Descargar todos los documentos en un archivo ZIP
+    /**
+     * Descarga de todos los documentos en un ZIP
+     */
     @GetMapping("/descargarTodos")
     public void descargarTodos(
             @RequestParam String propietario,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaInicio,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaFinal,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") java.util.Date fechaInicio,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") java.util.Date fechaFinal,
             HttpServletResponse response) {
 
         try {
-            List<Documento> documentos = documentoServiceImpl.getDocumentosPorFechasYPropietario(propietario, (java.sql.Date) fechaInicio, (java.sql.Date) fechaFinal);
+            System.out.println("=== Iniciando descarga masiva ===");
+
+            java.sql.Date sqlFechaInicio = new java.sql.Date(fechaInicio.getTime());
+            java.sql.Date sqlFechaFinal = new java.sql.Date(fechaFinal.getTime());
+
+            List<Documento> documentos = documentoServiceImpl.getDocumentosPorFechasYPropietario(propietario, sqlFechaInicio, sqlFechaFinal);
 
             if (documentos.isEmpty()) {
+                System.out.println("⚠️ No se encontraron documentos.");
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "No se encontraron documentos para los criterios seleccionados");
                 return;
             }
 
             String zipFileName = "documentos_" + propietario + ".zip";
-
             response.setContentType("application/zip");
             response.setHeader("Content-Disposition", "attachment; filename=\"" + zipFileName + "\"");
 
@@ -161,19 +171,16 @@ public class DocumentoController {
                                 zos.write(buffer, 0, length);
                             }
                         }
-
                         zos.closeEntry();
+                    } else {
+                        System.out.println("⚠️ Archivo no encontrado en el servidor: " + filePath.toAbsolutePath());
                     }
                 }
                 zos.finish();
+                System.out.println("✅ Descarga masiva completada.");
             }
         } catch (IOException e) {
-            try {
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al crear el ZIP");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            e.printStackTrace();
         }
     }
-
-}
+    }
