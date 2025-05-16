@@ -54,7 +54,7 @@ public class DocumentoController {
         // Verificar que las fechas sean correctas
         if (fechaInicio.after(fechaFinal)) {
             model.addAttribute("error", "La fecha de inicio no puede ser mayor que la fecha final.");
-            return "errorPage";  // Redirigir a una página de error si las fechas son incorrectas
+            return "Auth/Oficial";  // Redirigir a una página de error si las fechas son incorrectas
         }
 
         // Convertir java.util.Date a java.sql.Date
@@ -67,7 +67,7 @@ public class DocumentoController {
         // Verificar si no hay documentos
         if (documentos.isEmpty()) {
             model.addAttribute("error", "No se encontraron documentos para los parámetros dados.");
-            return "errorPage";  // Página de error si no hay documentos
+            return "Auth/Oficial";  // Página de error si no hay documentos
         }
 
         // Pasar los documentos al modelo

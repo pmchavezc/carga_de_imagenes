@@ -9,6 +9,10 @@
 <body>
 
 <div class="container">
+    <div th:if="${error}" class="alert alert-danger">
+        <p th:text="${error}"></p>
+    </div>
+
     <!-- Primer formulario para la consulta -->
     <form action="/getDocumentos" method="GET" id="formConsulta">
         <div class="header">
