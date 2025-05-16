@@ -30,4 +30,9 @@ public class AuthController {
         return "Auth/Descarga";
     }
 
+    @GetMapping("/errores")
+    public String Errores(){
+        return "Auth/errores";
+    }
+
 }

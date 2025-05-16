@@ -1,6 +1,8 @@
 package carga.demo.controllers;
 
+import carga.demo.Utils;
 import carga.demo.modelo.Documento;
+import carga.demo.modelo.ResponseWrapper;
 import carga.demo.modelo.Usuario;
 import carga.demo.servicios.DocumentoServiceImpl;
 import carga.demo.servicios.UsuarioServiceImpl;
@@ -8,11 +10,9 @@ import carga.demo.providers.CurrentUserProvider;  // Importar para obtener el ID
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-@Controller
+@RestController
 public class DocumentoController {
 
     @Autowired
@@ -48,7 +48,7 @@ public class DocumentoController {
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
 
     @PostMapping("/cargar_datos")
-    public String cargarDatos(
+    public ResponseEntity<ResponseWrapper> cargarDatos(
             @RequestParam("numeroDoc") String numeroDoc,
             @RequestParam("fechaElaboracion") @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaElaboracion,
             @RequestParam("fechaIngreso") @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaIngreso,
@@ -59,24 +59,32 @@ public class DocumentoController {
 
         // 1. Validación de la fecha de elaboración no sea mayor que la fecha de ingreso
         if (fechaElaboracion.after(fechaIngreso)) {
-            return "error";  // Redirigir a una página de error o mostrar mensaje de error
+            return ResponseEntity
+                    .badRequest()
+                    .body(ResponseWrapper.error("La fecha de elaboración no puede ser mayor a la fecha de ingreso"));  // Redirigir a una página de error o mostrar mensaje de error
         }
 
         // 2. Validar que el archivo no sea mayor a 10 MB
         if (adjuntarPdf.getSize() > MAX_FILE_SIZE) {
-            return "error";  // Redirigir a una página de error o mostrar mensaje de error
+            return ResponseEntity
+                    .badRequest()
+                    .body(ResponseWrapper.error("El archivo debe ser menor a 10 MB"));  // Redirigir a una página de error o mostrar mensaje de error
         }
 
         // 3. Validación para evitar duplicación de documentos
         if (documentoService.existeDocumento(numeroDoc)) {
-            return "error";  // Redirigir a una página de error o mostrar mensaje de error
+            return ResponseEntity
+                    .badRequest()
+                    .body(ResponseWrapper.error("El número de documento ya existe"));  // Redirigir a una página de error o mostrar mensaje de error
         }
 
         // 5. Obtener el ID del usuario logueado
         Long userId = currentUserProvider.getCurrentUserId();  // Usamos el método para obtener el ID del usuario autenticado
 
         if (userId == null) {
-            return "error";  // Si no se puede obtener el ID del usuario, redirigir a error
+            return ResponseEntity
+                    .badRequest()
+                    .body(ResponseWrapper.error("Usuario no valido"));  // Si no se puede obtener el ID del usuario, redirigir a error
         }
 
         // 6. Obtener la IP del usuario
@@ -94,6 +102,26 @@ public class DocumentoController {
                 e.printStackTrace();
             }
         }
+        if (adjuntarPdf.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(ResponseWrapper.error("El archivo está vacío"));
+        }
+
+        try {
+            if (Utils.isFileEncryptedOrEmptyBody(adjuntarPdf)) {
+                return ResponseEntity
+                        .badRequest()
+                        .body(ResponseWrapper.error("El archivo podría estar encriptado, o su contenido está vacío"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseWrapper.error("Error al procesar el archivo PDF"));
+        }
+
+
 
         try {
             // Guardar el archivo en el servidor
@@ -118,10 +146,14 @@ public class DocumentoController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            return "error";  // Devuelve un error si ocurre algún problema al guardar el archivo
+            return ResponseEntity
+                    .badRequest()
+                    .body(ResponseWrapper.error("Error al guardar el archivo"));  // Devuelve un error si ocurre algún problema al guardar el archivo
         }
 
-        return "redirect:/oficial";  // Redirigir a otra página, como la página de oficial
+        return ResponseEntity
+                .badRequest()
+                .body(ResponseWrapper.error("Archivo guardado exitosamente"));  // Redirigir a otra página, como la página de oficial
     }
 
     private String obtenerIpUsuario(HttpServletRequest request) {
