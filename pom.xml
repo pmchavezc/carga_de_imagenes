@@ -11,6 +11,7 @@
 	<groupId>carga</groupId>
 	<artifactId>demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<name>carga_de_imagenes</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>

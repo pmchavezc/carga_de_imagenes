@@ -21,12 +21,12 @@ public class AuthController {
 
     @GetMapping("/oficial")
     public String Oficial(){
-        return "Auth/Oficial";
+        return "Auth/oficial";
     }
     // Solo es para prueba
     @GetMapping("/descargaAuth")
     public String Descarga(){
-        return "Auth/Descarga";
+        return "Auth/descarga";
     }
 
 }
