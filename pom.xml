@@ -159,14 +159,10 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
+				<artifactId>maven-compiler-plugin</artifactId> <!-- O la versión más reciente -->
 				<configuration>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</path>
-					</annotationProcessorPaths>
+					<source>17</source> <!-- O la versión de Java que estés usando -->
+					<target>17</target> <!-- O la versión de Java que estés usando -->
 				</configuration>
 			</plugin>
 			<plugin>
