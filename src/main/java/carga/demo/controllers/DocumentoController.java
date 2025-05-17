@@ -93,15 +93,11 @@ public class DocumentoController {
                 return;
             }
 
-            // Definir ruta correcta
-            String basePath = "uploads/";
-            String fileName = doc.getAdjuntar_Archivo();
+            String basePath = "C:/Users/Pablo/Downloads/carga_de_imagenes/uploads";  // Ruta absoluta correcta
+            String fileName = doc.getAdjuntar_Archivo().trim();
 
-            // Asegurarnos de que no hay espacios o caracteres raros
-            fileName = fileName.trim().replaceAll("[^a-zA-Z0-9\\.\\-\\_\\(\\)\\s]", "_");
-
-            // Generar el path absoluto
             Path file = Paths.get(basePath, fileName);
+
             System.out.println("Ruta completa del archivo: " + file.toAbsolutePath());
             System.out.println("El archivo existe? " + Files.exists(file));
 
