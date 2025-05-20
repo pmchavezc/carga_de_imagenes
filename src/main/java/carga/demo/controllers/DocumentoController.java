@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -79,7 +80,43 @@ public class DocumentoController {
 
         return "Auth/descarga";  // Vista que muestra los documentos
     }
+    // Ver documento individual
+    @GetMapping("/verDocumento")
+    public void verDocumento(@RequestParam Long id, HttpServletResponse response) throws IOException {
+        Documento doc = documentoServiceImpl.buscarPorId(id);
 
+        if (doc == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Documento no encontrado");
+            return;
+        }
+
+        // Ajusta aquí la ruta absoluta donde están guardados tus PDFs
+        String basePath = "uploads/";
+        String fileName = doc.getAdjuntar_Archivo().trim();
+
+        Path file = Paths.get(basePath, fileName);
+        if (!Files.exists(file)) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Archivo no encontrado en el servidor");
+            return;
+        }
+
+        // Establece Content-Type correcto para PDF
+        response.setContentType("application/pdf");
+
+        // Indica inline para que el navegador muestre el PDF en la pestaña (no como descarga)
+        response.setHeader("Content-Disposition", "inline; filename=\"" + fileName + "\"");
+
+        try (InputStream fis = Files.newInputStream(file);
+             OutputStream os = response.getOutputStream()) {
+
+            byte[] buffer = new byte[4096];
+            int length;
+            while ((length = fis.read(buffer)) > 0) {
+                os.write(buffer, 0, length);
+            }
+            os.flush();
+        }
+    }
 
     // Descargar documento individual
     @GetMapping("/descargarDocumento")
@@ -88,12 +125,12 @@ public class DocumentoController {
             Documento doc = documentoServiceImpl.buscarPorId(id);
 
             if (doc == null) {
-                System.out.println("⚠️ Documento no encontrado para ID: " + id);
+                System.out.println(" Documento no encontrado para ID: " + id);
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Documento no encontrado");
                 return;
             }
 
-            String basePath = "C:/Users/Pablo/Downloads/carga_de_imagenes/uploads";  // Ruta absoluta correcta
+            String basePath = "uploads/";  // Ruta absoluta correcta
             String fileName = doc.getAdjuntar_Archivo().trim();
 
             Path file = Paths.get(basePath, fileName);
@@ -102,7 +139,7 @@ public class DocumentoController {
             System.out.println("El archivo existe? " + Files.exists(file));
 
             if (!Files.exists(file)) {
-                System.out.println("⚠️ Archivo no encontrado en el servidor: " + file.toAbsolutePath());
+                System.out.println(" Archivo no encontrado en el servidor: " + file.toAbsolutePath());
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Archivo no encontrado en el servidor");
                 return;
             }
@@ -119,7 +156,7 @@ public class DocumentoController {
                     os.write(buffer, 0, length);
                 }
                 os.flush();
-                System.out.println("✅ Descarga completada.");
+                System.out.println(" Descarga completada.");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -145,7 +182,7 @@ public class DocumentoController {
             List<Documento> documentos = documentoServiceImpl.getDocumentosPorFechasYPropietario(propietario, sqlFechaInicio, sqlFechaFinal);
 
             if (documentos.isEmpty()) {
-                System.out.println("⚠️ No se encontraron documentos.");
+                System.out.println(" No se encontraron documentos.");
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "No se encontraron documentos para los criterios seleccionados");
                 return;
             }
@@ -170,14 +207,17 @@ public class DocumentoController {
                         }
                         zos.closeEntry();
                     } else {
-                        System.out.println("⚠️ Archivo no encontrado en el servidor: " + filePath.toAbsolutePath());
+                        System.out.println(" Archivo no encontrado en el servidor: " + filePath.toAbsolutePath());
                     }
                 }
                 zos.finish();
-                System.out.println("✅ Descarga masiva completada.");
+                System.out.println(" Descarga masiva completada.");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+
+
     }
